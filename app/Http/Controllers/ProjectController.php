@@ -79,7 +79,8 @@ class ProjectController extends Controller
 
                 Log::error('Cloudinary upload failed (store): ' . $e->getMessage());
 
-                return back()
+                return redirect()
+                    ->route('admin.projects.create')
                     ->withInput()
                     ->withErrors([
                         'image' => 'Cloudinary upload failed: ' . $e->getMessage()
@@ -145,7 +146,8 @@ class ProjectController extends Controller
 
                 Log::error('Cloudinary upload failed (update): ' . $e->getMessage());
 
-                return back()
+                return redirect()
+                    ->route('admin.projects.edit', $project)
                     ->withInput()
                     ->withErrors([
                         'image' => 'Cloudinary upload failed: ' . $e->getMessage()
