@@ -100,14 +100,14 @@ Route::get('/dashboard', function () {
 
 Route::get('/cloudinary-test', function () {
     try {
-        $upload = Cloudinary::upload(
+        $result = Cloudinary::uploadApi()->upload(
             'https://res.cloudinary.com/demo/image/upload/sample.jpg'
         );
 
         return response()->json([
             'success' => true,
             'message' => 'Cloudinary is working ✅',
-            'url' => $upload->getSecurePath(),
+            'url' => $result['secure_url'],
         ]);
 
     } catch (\Throwable $e) {

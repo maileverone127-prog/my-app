@@ -68,14 +68,12 @@ class ProjectController extends Controller
 
             try {
 
-                $uploadedFileUrl = Cloudinary::upload(
+                $result = Cloudinary::uploadApi()->upload(
                     $request->file('image')->getRealPath(),
-                    [
-                        'folder' => 'projects'
-                    ]
-                )->getSecurePath();
+                    ['folder' => 'projects']
+                );
 
-                $validated['image'] = $uploadedFileUrl;
+                $validated['image'] = $result['secure_url'];
 
             } catch (\Exception $e) {
 
@@ -136,14 +134,12 @@ class ProjectController extends Controller
 
             try {
 
-                $uploadedFileUrl = Cloudinary::upload(
+                $result = Cloudinary::uploadApi()->upload(
                     $request->file('image')->getRealPath(),
-                    [
-                        'folder' => 'projects'
-                    ]
-                )->getSecurePath();
+                    ['folder' => 'projects']
+                );
 
-                $validated['image'] = $uploadedFileUrl;
+                $validated['image'] = $result['secure_url'];
 
             } catch (\Exception $e) {
 
