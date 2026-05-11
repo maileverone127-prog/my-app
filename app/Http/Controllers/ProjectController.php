@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Project;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 class ProjectController extends Controller
@@ -78,10 +79,12 @@ class ProjectController extends Controller
 
             } catch (\Exception $e) {
 
+                Log::error('Cloudinary upload failed (store): ' . $e->getMessage());
+
                 return back()
                     ->withInput()
                     ->withErrors([
-                        'image' => 'Cloudinary upload failed.'
+                        'image' => 'Cloudinary upload failed: ' . $e->getMessage()
                     ]);
             }
         }
@@ -144,10 +147,12 @@ class ProjectController extends Controller
 
             } catch (\Exception $e) {
 
+                Log::error('Cloudinary upload failed (update): ' . $e->getMessage());
+
                 return back()
                     ->withInput()
                     ->withErrors([
-                        'image' => 'Image upload failed.'
+                        'image' => 'Cloudinary upload failed: ' . $e->getMessage()
                     ]);
             }
         }
