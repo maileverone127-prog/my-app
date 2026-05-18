@@ -74,6 +74,8 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::get('/projects/create', [ProjectController::class, 'create'])->name('projects.create');
     Route::post('/projects', [ProjectController::class, 'store'])->name('projects.store');
 
+    Route::get('/projects/{project}', [ProjectController::class, 'adminShow'])->name('projects.show');
+
     Route::get('/projects/{project}/edit', [ProjectController::class, 'edit'])->name('projects.edit');
     Route::put('/projects/{project}', [ProjectController::class, 'update'])->name('projects.update');
 

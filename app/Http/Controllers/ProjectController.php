@@ -104,6 +104,11 @@ class ProjectController extends Controller
         return view('admin.projects.edit', compact('project'));
     }
 
+    public function adminShow(Project $project)
+    {
+        return redirect()->route('admin.projects.edit', $project);
+    }
+
     /* ================= UPDATE ================= */
 
     public function update(Request $request, Project $project)
