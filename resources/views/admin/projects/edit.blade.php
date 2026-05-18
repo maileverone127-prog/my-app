@@ -75,7 +75,7 @@
             </div>
         @endif
 
-        <form action="{{ route('admin.projects.update', $project->id) }}"
+        <form action="{{ route('admin.projects.update', $project) }}"
               method="POST"
               enctype="multipart/form-data"
               x-data="editForm()"
