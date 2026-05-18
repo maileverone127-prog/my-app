@@ -11,9 +11,12 @@
 @section('content')
 
 @php
-    $projectCount = \App\Models\Project::count();
+    $projectCount   = \App\Models\Project::count();
     $recentProjects = \App\Models\Project::latest()->take(5)->get();
-    $messageCount = \App\Models\Message::count();
+    $messageCount   = \App\Models\Message::count();
+    $completedCount = \App\Models\Project::where('status', 'completed')->count();
+    $ongoingCount   = \App\Models\Project::where('status', 'ongoing')->count();
+    $plannedCount   = \App\Models\Project::where('status', 'planned')->count();
 @endphp
 
 {{-- ===== WELCOME BANNER ===== --}}
@@ -52,7 +55,7 @@
 </div>
 
 {{-- ===== STATS GRID ===== --}}
-<div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-bottom:1.75rem">
+<div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin-bottom:1.75rem">
 
     {{-- Total Projects --}}
     <div class="stat-card animate-fade-in-up stagger-1">
@@ -68,8 +71,47 @@
         </div>
     </div>
 
-    {{-- Messages --}}
+    {{-- Completed --}}
     <div class="stat-card animate-fade-in-up stagger-2">
+        <div class="stat-icon" style="background:#dcfce7;color:#16a34a">
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+        </div>
+        <div>
+            <div class="stat-val">{{ $completedCount }}</div>
+            <div class="stat-label">Completed</div>
+        </div>
+    </div>
+
+    {{-- Ongoing --}}
+    <div class="stat-card animate-fade-in-up stagger-3">
+        <div class="stat-icon" style="background:#dbeafe;color:#1d4ed8">
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+            </svg>
+        </div>
+        <div>
+            <div class="stat-val">{{ $ongoingCount }}</div>
+            <div class="stat-label">Ongoing</div>
+        </div>
+    </div>
+
+    {{-- Planned --}}
+    <div class="stat-card animate-fade-in-up stagger-4">
+        <div class="stat-icon" style="background:#fef9c3;color:#a16207">
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+            </svg>
+        </div>
+        <div>
+            <div class="stat-val">{{ $plannedCount }}</div>
+            <div class="stat-label">Planned</div>
+        </div>
+    </div>
+
+    {{-- Messages --}}
+    <div class="stat-card animate-fade-in-up stagger-5">
         <div class="stat-icon" style="background:#fef3c7;color:#d97706">
             <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -82,27 +124,8 @@
         </div>
     </div>
 
-    {{-- Portfolio Status --}}
-    <div class="stat-card animate-fade-in-up stagger-3">
-        <div class="stat-icon" style="background:#dcfce7;color:#16a34a">
-            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-            </svg>
-        </div>
-        <div>
-            <div class="stat-val" style="font-size:1.125rem;margin-bottom:.3rem">
-                <span style="display:inline-flex;align-items:center;gap:.375rem">
-                    <span style="width:8px;height:8px;border-radius:50%;background:#22c55e;display:inline-block;animation:pulse-ring 2s infinite"></span>
-                    Online
-                </span>
-            </div>
-            <div class="stat-label">Portfolio Status</div>
-        </div>
-    </div>
-
     {{-- Last Updated --}}
-    <div class="stat-card animate-fade-in-up stagger-4">
+    <div class="stat-card animate-fade-in-up stagger-5">
         <div class="stat-icon" style="background:#ede9fe;color:#7c3aed">
             <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -143,6 +166,7 @@
                     <thead>
                         <tr>
                             <th>Project</th>
+                            <th class="hidden sm:table-cell">Status</th>
                             <th class="hidden sm:table-cell">Added</th>
                             <th style="text-align:right">Actions</th>
                         </tr>
@@ -179,6 +203,15 @@
                                         </div>
                                     </div>
                                 </div>
+                            </td>
+                            <td class="hidden sm:table-cell">
+                                @php
+                                    $sm = ['completed'=>['Completed','#dcfce7','#15803d'],'ongoing'=>['Ongoing','#dbeafe','#1d4ed8'],'planned'=>['Planned','#fef9c3','#a16207']];
+                                    [$sl,$sb,$sc] = $sm[$project->status ?? 'completed'] ?? $sm['completed'];
+                                @endphp
+                                <span style="font-size:.6875rem;font-weight:600;padding:.2rem .6rem;border-radius:20px;background:{{ $sb }};color:{{ $sc }};white-space:nowrap">
+                                    {{ $sl }}
+                                </span>
                             </td>
                             <td class="hidden sm:table-cell">
                                 <span style="font-size:.8125rem;color:var(--textM)">
