@@ -49,9 +49,10 @@ class ProjectController extends Controller
     {
         // Validation
         $validated = $request->validate([
-            'title' => 'required|string|max:255|unique:projects,title',
+            'title'       => 'required|string|max:255|unique:projects,title',
             'description' => 'required|string',
-            'image' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+            'image'       => 'required|image|mimes:jpg,jpeg,png,gif,webp|max:5120',
+            'github_link' => 'nullable|url|max:500',
         ]);
 
         // Generate slug
@@ -109,9 +110,10 @@ class ProjectController extends Controller
     {
         // Validation
         $validated = $request->validate([
-            'title' => 'required|string|max:255|unique:projects,title,' . $project->id,
+            'title'       => 'required|string|max:255|unique:projects,title,' . $project->id,
             'description' => 'required|string',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'image'       => 'nullable|image|mimes:jpg,jpeg,png,gif,webp|max:5120',
+            'github_link' => 'nullable|url|max:500',
         ]);
 
         // Update slug if title changed

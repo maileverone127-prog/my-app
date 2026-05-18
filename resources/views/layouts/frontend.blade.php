@@ -4,141 +4,198 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kushal Portfolio</title>
+
+    {{-- =====================================================
+         ANTI-FOUC: apply stored dark mode BEFORE any paint
+         ===================================================== --}}
+    <script>
+    (function(){
+        try {
+            var d = localStorage.getItem('adm_dark');
+            var html = document.documentElement;
+            if (d === 'dark') {
+                html.classList.add('dark');
+            } else if (d === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                html.classList.add('dark');
+            }
+        } catch(e) {}
+    })();
+    </script>
+
+    {{-- External CSS --}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
-    <!-- AOS CSS -->
     <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css">
 
-    <!-- Devicons -->
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css">
-
-    <!-- AlpineJS -->
-    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-
-    <!-- Tailwind (Vite) -->
+    {{-- app.js includes Alpine.js (npm) — no CDN Alpine needed --}}
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="bg-gray-50 dark:bg-gray-950 text-gray-800 dark:text-gray-100 transition-colors duration-300 antialiased">
+<body class="bg-white dark:bg-gray-950 text-gray-800 dark:text-gray-100 transition-colors duration-300 antialiased">
 
-{{-- ================= NAVBAR ================= --}}
-<nav x-data="{ open: false }"
+{{-- ===============================================================
+     NAVBAR
+================================================================ --}}
+<nav x-data="{
+        open: false,
+        dark: document.documentElement.classList.contains('dark'),
+        toggleDark() {
+            this.dark = !this.dark;
+            var html = document.documentElement;
+            html.classList.add('theme-transition');
+            html.classList.toggle('dark', this.dark);
+            localStorage.setItem('adm_dark', this.dark ? 'dark' : 'light');
+            setTimeout(function(){ html.classList.remove('theme-transition'); }, 350);
+        }
+     }"
      class="fixed top-0 left-0 w-full z-50
             backdrop-blur-lg
-            bg-white/70 dark:bg-gray-900/70
-            border-b border-gray-200/50 dark:border-gray-700/50
+            bg-white/80 dark:bg-gray-900/80
+            border-b border-gray-200/60 dark:border-gray-700/60
             shadow-sm">
 
     <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
 
-        <!-- LOGO -->
-        <a href="{{ url('/') }}"
-           class="text-xl font-bold text-indigo-600">
+        {{-- LOGO --}}
+        <a href="{{ url('/') }}" class="text-xl font-bold text-indigo-600 dark:text-indigo-400">
             Kushal.dev
         </a>
 
-        <!-- DESKTOP MENU -->
-        <div class="hidden md:flex items-center space-x-8 text-sm font-medium">
+        {{-- DESKTOP MENU --}}
+        <div class="hidden md:flex items-center gap-7 text-sm font-medium">
 
-            <!-- Home -->
             <a href="{{ url('/') }}"
-               class="{{ request()->is('/') 
-                   ? 'text-indigo-600' 
-                   : 'text-black hover:text-indigo-600' }}">
+               class="{{ request()->is('/') ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400' }} transition-colors duration-200">
                 Home
             </a>
 
-            <!-- Projects -->
             <a href="{{ url('/#projects') }}"
-               class="text-black hover:text-indigo-600">
+               class="text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors duration-200">
                 Projects
             </a>
 
-            <!-- Contact -->
             <a href="{{ url('/contact') }}"
-               class="{{ request()->is('contact') 
-                   ? 'text-indigo-600' 
-                   : 'text-black hover:text-indigo-600' }}">
+               class="{{ request()->is('contact') ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400' }} transition-colors duration-200">
                 Contact
             </a>
 
-            <!-- ADMIN ONLY -->
             @auth
                 <a href="{{ url('/admin') }}"
-                   class="{{ request()->is('admin*') 
-                       ? 'text-indigo-600 font-semibold' 
-                       : 'text-black hover:text-indigo-600' }}">
+                   class="{{ request()->is('admin*') ? 'text-indigo-600 font-semibold dark:text-indigo-400' : 'text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400' }} transition-colors duration-200">
                     Dashboard
                 </a>
 
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
-                    <button class="text-red-500 hover:text-red-700 transition">
+                    <button class="text-red-500 hover:text-red-600 dark:hover:text-red-400 transition">
                         Logout
                     </button>
                 </form>
             @endauth
 
+            {{-- ===== DARK MODE TOGGLE (desktop) ===== --}}
+            <button
+                @click="toggleDark()"
+                :title="dark ? 'Switch to Light Mode' : 'Switch to Dark Mode'"
+                :aria-label="dark ? 'Switch to Light Mode' : 'Switch to Dark Mode'"
+                class="w-9 h-9 flex items-center justify-center rounded-lg
+                       text-gray-600 dark:text-gray-300
+                       hover:text-indigo-600 dark:hover:text-indigo-400
+                       hover:bg-gray-100 dark:hover:bg-gray-800
+                       border border-transparent hover:border-gray-200 dark:hover:border-gray-700
+                       transition-all duration-200"
+            >
+                {{-- Sun: visible when dark mode is ON --}}
+                <svg x-show="dark" x-cloak style="width:17px;height:17px" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"/>
+                </svg>
+                {{-- Moon: visible when light mode is ON --}}
+                <svg x-show="!dark" x-cloak style="width:17px;height:17px" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+                </svg>
+            </button>
+
         </div>
 
-        <!-- MOBILE BUTTON -->
-        <button @click="open = !open"
-                class="md:hidden text-gray-700 dark:text-gray-300 focus:outline-none">
+        {{-- MOBILE: dark toggle + hamburger --}}
+        <div class="md:hidden flex items-center gap-1">
 
-            <svg x-show="!open" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                 stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M4 6h16M4 12h16M4 18h16"/>
-            </svg>
+            {{-- Dark toggle (mobile) --}}
+            <button
+                @click="toggleDark()"
+                :title="dark ? 'Light Mode' : 'Dark Mode'"
+                class="w-9 h-9 flex items-center justify-center rounded-lg
+                       text-gray-600 dark:text-gray-300
+                       hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200"
+            >
+                <svg x-show="dark" x-cloak style="width:18px;height:18px" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"/>
+                </svg>
+                <svg x-show="!dark" x-cloak style="width:18px;height:18px" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+                </svg>
+            </button>
 
-            <svg x-show="open" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                 stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M6 18L18 6M6 6l12 12"/>
-            </svg>
+            {{-- Hamburger --}}
+            <button @click="open = !open"
+                    class="w-9 h-9 flex items-center justify-center text-gray-700 dark:text-gray-300 focus:outline-none">
+                <svg x-show="!open" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                </svg>
+                <svg x-show="open" x-cloak class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
 
-        </button>
+        </div>
+
     </div>
 
-    <!-- MOBILE MENU -->
+    {{-- MOBILE MENU --}}
     <div x-show="open"
-         x-transition
-         class="md:hidden bg-white dark:bg-gray-900
-                border-t border-gray-200 dark:border-gray-700 shadow-sm">
+         x-transition:enter="transition ease-out duration-200"
+         x-transition:enter-start="opacity-0 -translate-y-2"
+         x-transition:enter-end="opacity-100 translate-y-0"
+         x-transition:leave="transition ease-in duration-150"
+         x-transition:leave-start="opacity-100 translate-y-0"
+         x-transition:leave-end="opacity-0 -translate-y-2"
+         x-cloak
+         class="md:hidden bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 shadow-md">
 
-        <div class="px-6 py-6 space-y-4 text-gray-700 dark:text-gray-300 font-medium">
+        <div class="px-6 py-5 space-y-3 text-sm font-medium">
 
             <a href="{{ url('/') }}" @click="open=false"
-               class="block hover:text-indigo-600">
+               class="flex items-center gap-2 py-2 text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
                 Home
             </a>
 
             <a href="{{ url('/#projects') }}" @click="open=false"
-               class="block hover:text-indigo-600">
+               class="flex items-center gap-2 py-2 text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
                 Projects
             </a>
 
             <a href="{{ url('/contact') }}" @click="open=false"
-               class="block hover:text-indigo-600">
+               class="flex items-center gap-2 py-2 text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
                 Contact
             </a>
 
-            <!-- ADMIN ONLY -->
             @auth
-                <a href="{{ url('/admin') }}" @click="open=false"
-                   class="block text-indigo-600 font-semibold">
-                    Dashboard
-                </a>
-
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button class="block text-red-500 hover:text-red-600">
-                        Logout
-                    </button>
-                </form>
+                <div class="pt-1 border-t border-gray-200 dark:border-gray-700">
+                    <a href="{{ url('/admin') }}" @click="open=false"
+                       class="flex items-center gap-2 py-2 text-indigo-600 dark:text-indigo-400 font-semibold">
+                        Dashboard
+                    </a>
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button class="flex items-center gap-2 py-2 text-red-500 hover:text-red-600 dark:hover:text-red-400 transition">
+                            Logout
+                        </button>
+                    </form>
+                </div>
             @endauth
 
         </div>
@@ -146,26 +203,24 @@
 
 </nav>
 
-{{-- ================= CONTENT ================= --}}
+{{-- ===============================================================
+     PAGE CONTENT
+================================================================ --}}
 <main class="pt-24">
     @yield('content')
 </main>
 
-{{-- ================= AOS JS ================= --}}
+{{-- AOS animation --}}
 <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
 <script>
-    AOS.init({
-        once: true,
-        duration: 800,
-        offset: 100,
-    });
+    AOS.init({ once: true, duration: 800, offset: 100 });
 </script>
 
-{{-- ================= FLASH AUTO FADE ================= --}}
+{{-- Flash message auto-fade --}}
 <script>
-    setTimeout(() => {
-        document.querySelectorAll('[data-alert]').forEach(el => {
-            el.style.transition = "opacity 0.5s";
+    setTimeout(function() {
+        document.querySelectorAll('[data-alert]').forEach(function(el) {
+            el.style.transition = 'opacity 0.5s';
             el.style.opacity = 0;
         });
     }, 3000);

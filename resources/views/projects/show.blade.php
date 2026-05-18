@@ -2,87 +2,155 @@
 
 @section('content')
 
-@php
-    use Illuminate\Support\Str;
-@endphp
+@php use Illuminate\Support\Str; @endphp
 
-<div class="bg-gray-100 py-20 px-6">
+<div class="bg-gray-50 dark:bg-gray-950 py-20 px-6 min-h-screen transition-colors duration-300">
 
     <div class="max-w-6xl mx-auto">
 
-        <!-- Back -->
+        {{-- Back link --}}
         <a href="{{ route('projects.index') }}"
-           class="text-indigo-600 hover:text-indigo-800 text-sm mb-8 inline-block">
-            ← Back to Projects
+           class="inline-flex items-center gap-2 text-sm text-indigo-600 dark:text-indigo-400
+                  hover:text-indigo-800 dark:hover:text-indigo-300
+                  mb-10 transition-colors duration-200">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+            </svg>
+            Back to Projects
         </a>
 
-        <!-- Title -->
-        <div class="text-center mb-16">
-            <h1 class="text-4xl md:text-5xl font-bold text-gray-900">
+        {{-- Title --}}
+        <div class="text-center mb-14" data-aos="fade-up">
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white">
                 {{ $project->title }}
             </h1>
-            <div class="w-24 h-1 bg-indigo-600 mx-auto mt-4 rounded-full"></div>
+            <div class="w-20 h-1 bg-indigo-600 dark:bg-indigo-400 mx-auto mt-5 rounded-full"></div>
         </div>
 
-        <!-- Card -->
-        <div class="bg-white rounded-3xl shadow-xl p-8 md:p-12">
+        {{-- Card --}}
+        <div class="bg-white dark:bg-gray-900
+                    rounded-3xl shadow-xl dark:shadow-gray-900/50
+                    border border-gray-100 dark:border-gray-700
+                    p-8 md:p-12 transition-colors duration-300"
+             data-aos="fade-up" data-aos-delay="100">
 
             <div class="grid md:grid-cols-2 gap-12 items-center">
 
-                <!-- ✅ FINAL IMAGE FIX -->
-                <div class="overflow-hidden rounded-2xl shadow-lg">
+                {{-- Project Image --}}
+                <div class="overflow-hidden rounded-2xl shadow-lg dark:shadow-gray-900/50">
 
                     @if(!empty($project->image))
 
                         @if(Str::startsWith($project->image, ['http://', 'https://']))
-                            {{-- Cloudinary --}}
-                            <img 
-                                src="{{ $project->image }}"
-                                alt="{{ $project->title }}"
-                                class="w-full h-[400px] object-cover hover:scale-105 transition duration-500"
-                            >
+                            <img src="{{ $project->image }}"
+                                 alt="{{ $project->title }}"
+                                 class="w-full h-[380px] object-cover hover:scale-105 transition duration-500">
                         @else
-                            {{-- Local storage --}}
-                            <img 
-                                src="{{ asset('storage/'.$project->image) }}"
-                                alt="{{ $project->title }}"
-                                class="w-full h-[400px] object-cover hover:scale-105 transition duration-500"
-                            >
+                            <img src="{{ asset('storage/'.$project->image) }}"
+                                 alt="{{ $project->title }}"
+                                 class="w-full h-[380px] object-cover hover:scale-105 transition duration-500">
                         @endif
 
                     @else
-                        {{-- No image --}}
-                        <div class="w-full h-[400px] flex items-center justify-center bg-gray-200">
-                            <span class="text-gray-400">No Image Available</span>
+                        <div class="w-full h-[380px] flex items-center justify-center
+                                    bg-gray-100 dark:bg-gray-800">
+                            <span class="text-gray-400 dark:text-gray-600">No Image Available</span>
                         </div>
                     @endif
 
                 </div>
 
-                <!-- Content -->
+                {{-- Content --}}
                 <div>
 
-                    <h2 class="text-2xl font-semibold text-gray-800 mb-6">
+                    <h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-5">
                         Project Overview
                     </h2>
 
-                    <p class="text-gray-600 leading-relaxed text-lg mb-8">
+                    <p class="text-gray-600 dark:text-gray-400 leading-relaxed text-base mb-8">
                         {{ $project->description }}
                     </p>
 
-                    @if($project->link)
-                        <a href="{{ $project->link }}"
-                           target="_blank"
-                           class="inline-block px-8 py-3 bg-indigo-600 text-white rounded-xl shadow-md hover:bg-indigo-700 transition transform hover:scale-105">
-                            Visit Live Project →
-                        </a>
-                    @endif
+                    <div class="flex flex-wrap gap-3">
+
+                        @if($project->link)
+                            <a href="{{ $project->link }}"
+                               target="_blank"
+                               class="inline-flex items-center gap-2 px-6 py-3
+                                      bg-indigo-600 text-white rounded-xl shadow-md
+                                      hover:bg-indigo-700 hover:shadow-lg
+                                      transition duration-300 hover:-translate-y-0.5 font-medium">
+                                Visit Live Project →
+                            </a>
+                        @endif
+
+                        @if(!empty($project->github_link))
+                            <a href="{{ $project->github_link }}"
+                               target="_blank"
+                               class="inline-flex items-center gap-2 px-6 py-3
+                                      border border-gray-300 dark:border-gray-600
+                                      text-gray-700 dark:text-gray-300
+                                      rounded-xl hover:border-indigo-500 dark:hover:border-indigo-400
+                                      hover:text-indigo-600 dark:hover:text-indigo-400
+                                      transition duration-300 font-medium">
+                                <i class="fab fa-github"></i>
+                                GitHub
+                            </a>
+                        @endif
+
+                    </div>
 
                 </div>
 
             </div>
 
         </div>
+
+        {{-- Related Projects --}}
+        @if(isset($relatedProjects) && $relatedProjects->count())
+        <div class="mt-20">
+
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-8 text-center"
+                data-aos="fade-up">
+                Other Projects
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                @foreach($relatedProjects as $i => $related)
+                    <a href="{{ route('projects.show', $related->slug) }}"
+                       class="group bg-white dark:bg-gray-900
+                              border border-gray-100 dark:border-gray-700
+                              rounded-2xl overflow-hidden shadow-sm
+                              hover:shadow-lg dark:hover:shadow-gray-900/50
+                              hover:-translate-y-1 transition duration-300 block"
+                       data-aos="fade-up" data-aos-delay="{{ $i * 80 }}">
+
+                        @if(!empty($related->image))
+                            <img src="{{ $related->image }}"
+                                 alt="{{ $related->title }}"
+                                 class="w-full h-44 object-cover group-hover:scale-105 transition duration-500"
+                                 loading="lazy">
+                        @else
+                            <div class="w-full h-44 bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+                                <span class="text-gray-400 dark:text-gray-600 text-sm">No Image</span>
+                            </div>
+                        @endif
+
+                        <div class="p-5">
+                            <h3 class="font-semibold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-200">
+                                {{ Str::limit($related->title, 40) }}
+                            </h3>
+                            <p class="text-gray-500 dark:text-gray-400 text-sm mt-2">
+                                {{ Str::limit($related->description, 70) }}
+                            </p>
+                        </div>
+
+                    </a>
+                @endforeach
+            </div>
+
+        </div>
+        @endif
 
     </div>
 
