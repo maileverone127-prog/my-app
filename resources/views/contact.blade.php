@@ -65,7 +65,7 @@
                            name="name"
                            value="{{ old('name') }}"
                            required
-                           placeholder="Your full name"
+                           placeholder=""
                            class="w-full rounded-xl
                                   border border-gray-300 dark:border-gray-600
                                   bg-white dark:bg-gray-800
@@ -86,7 +86,7 @@
                            name="email"
                            value="{{ old('email') }}"
                            required
-                           placeholder="your@email.com"
+                           placeholder=""
                            class="w-full rounded-xl
                                   border border-gray-300 dark:border-gray-600
                                   bg-white dark:bg-gray-800
@@ -106,7 +106,7 @@
                     <textarea name="message"
                               rows="6"
                               required
-                              placeholder="Tell me about your project or just say hi..."
+                              placeholder=""
                               class="w-full rounded-xl
                                      border border-gray-300 dark:border-gray-600
                                      bg-white dark:bg-gray-800
