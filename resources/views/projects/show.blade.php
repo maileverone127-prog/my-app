@@ -24,6 +24,18 @@
             <h1 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white">
                 {{ $project->title }}
             </h1>
+            @php
+                $statusStyles = [
+                    'completed' => 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400',
+                    'ongoing'   => 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400',
+                    'planned'   => 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/40 dark:text-yellow-400',
+                ];
+                $statusLabel = ucfirst($project->status ?? 'completed');
+                $statusClass = $statusStyles[$project->status ?? 'completed'] ?? $statusStyles['completed'];
+            @endphp
+            <span class="inline-block mt-4 text-sm font-semibold px-4 py-1 rounded-full {{ $statusClass }}">
+                {{ $statusLabel }}
+            </span>
             <div class="w-20 h-1 bg-indigo-600 dark:bg-indigo-400 mx-auto mt-5 rounded-full"></div>
         </div>
 

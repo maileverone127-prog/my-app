@@ -53,6 +53,7 @@ class ProjectController extends Controller
             'description' => 'required|string',
             'image'       => 'required|image|mimes:jpg,jpeg,png,gif,webp|max:5120',
             'github_link' => 'nullable|url|max:500',
+            'status'      => 'required|in:completed,ongoing,planned',
         ]);
 
         // Generate slug
@@ -119,6 +120,7 @@ class ProjectController extends Controller
             'description' => 'required|string',
             'image'       => 'nullable|image|mimes:jpg,jpeg,png,gif,webp|max:5120',
             'github_link' => 'nullable|url|max:500',
+            'status'      => 'required|in:completed,ongoing,planned',
         ]);
 
         // Update slug if title changed

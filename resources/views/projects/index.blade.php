@@ -40,9 +40,23 @@
 
                     <div class="p-6">
 
-                        <h3 class="text-xl font-semibold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-200">
-                            {{ $project->title }}
-                        </h3>
+                        <div class="flex items-start justify-between gap-2 mb-1">
+                            <h3 class="text-xl font-semibold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-200">
+                                {{ $project->title }}
+                            </h3>
+                            @php
+                                $statusStyles = [
+                                    'completed' => 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400',
+                                    'ongoing'   => 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400',
+                                    'planned'   => 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/40 dark:text-yellow-400',
+                                ];
+                                $statusLabel = ucfirst($project->status ?? 'completed');
+                                $statusClass = $statusStyles[$project->status ?? 'completed'] ?? $statusStyles['completed'];
+                            @endphp
+                            <span class="flex-shrink-0 text-xs font-semibold px-2.5 py-0.5 rounded-full {{ $statusClass }}">
+                                {{ $statusLabel }}
+                            </span>
+                        </div>
 
                         <p class="text-gray-600 dark:text-gray-400 text-sm mt-3 leading-relaxed">
                             {{ \Illuminate\Support\Str::limit($project->description, 120) }}

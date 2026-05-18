@@ -105,7 +105,20 @@
 
                 {{-- Card body --}}
                 <div class="proj-card-body">
-                    <h3 class="proj-card-title">{{ $project->title }}</h3>
+                    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:.5rem;margin-bottom:.375rem">
+                        <h3 class="proj-card-title" style="margin-bottom:0">{{ $project->title }}</h3>
+                        @php
+                            $statusMap = [
+                                'completed' => ['label' => 'Completed', 'bg' => '#dcfce7', 'color' => '#15803d'],
+                                'ongoing'   => ['label' => 'Ongoing',   'bg' => '#dbeafe', 'color' => '#1d4ed8'],
+                                'planned'   => ['label' => 'Planned',   'bg' => '#fef9c3', 'color' => '#a16207'],
+                            ];
+                            $s = $statusMap[$project->status ?? 'completed'] ?? $statusMap['completed'];
+                        @endphp
+                        <span style="flex-shrink:0;font-size:.6875rem;font-weight:600;padding:.2rem .55rem;border-radius:20px;background:{{ $s['bg'] }};color:{{ $s['color'] }};white-space:nowrap">
+                            {{ $s['label'] }}
+                        </span>
+                    </div>
                     <p class="proj-card-desc">
                         {{ \Illuminate\Support\Str::limit($project->description, 85) }}
                     </p>

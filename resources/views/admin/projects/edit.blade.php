@@ -148,6 +148,36 @@
                 @enderror
             </div>
 
+            {{-- Status --}}
+            <div style="margin-bottom:1.25rem">
+                <label for="status" class="a-label">
+                    Project Status
+                    <span style="color:#ef4444;margin-left:2px" aria-hidden="true">*</span>
+                </label>
+                <div style="position:relative">
+                    <select
+                        id="status"
+                        name="status"
+                        class="a-input @error('status') !border-red-400 @enderror"
+                        style="appearance:none;padding-right:2.5rem"
+                    >
+                        @foreach(['completed' => 'Completed', 'ongoing' => 'Ongoing', 'planned' => 'Planned'] as $val => $label)
+                            <option value="{{ $val }}" {{ old('status', $project->status ?? 'completed') === $val ? 'selected' : '' }}>
+                                {{ $label }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <div style="position:absolute;right:.75rem;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--textL)">
+                        <svg style="width:16px;height:16px" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </div>
+                </div>
+                @error('status')
+                    <div style="color:#ef4444;font-size:.75rem;margin-top:.3rem" role="alert">{{ $message }}</div>
+                @enderror
+            </div>
+
             {{-- Current & New Image --}}
             <div style="margin-bottom:1.75rem">
                 <label class="a-label">Project Image</label>
@@ -304,6 +334,15 @@
                 <div style="display:flex;justify-content:space-between;align-items:center;gap:.5rem">
                     <span style="color:var(--textM)">Updated</span>
                     <span style="color:var(--text);font-weight:500">{{ $project->updated_at->diffForHumans() }}</span>
+                </div>
+                <div style="height:1px;background:var(--border)"></div>
+                <div style="display:flex;justify-content:space-between;align-items:center;gap:.5rem">
+                    <span style="color:var(--textM)">Status</span>
+                    @php
+                        $sm = ['completed'=>['Completed','#dcfce7','#15803d'],'ongoing'=>['Ongoing','#dbeafe','#1d4ed8'],'planned'=>['Planned','#fef9c3','#a16207']];
+                        [$sl,$sb,$sc] = $sm[$project->status ?? 'completed'] ?? $sm['completed'];
+                    @endphp
+                    <span style="font-size:.6875rem;font-weight:600;padding:.2rem .55rem;border-radius:20px;background:{{ $sb }};color:{{ $sc }}">{{ $sl }}</span>
                 </div>
                 @if(!empty($project->image))
                 <div style="height:1px;background:var(--border)"></div>
