@@ -2,13 +2,13 @@
 
 @section('content')
 
-<section class="py-24 bg-white dark:bg-gray-950 min-h-screen transition-colors duration-300">
+<section class="py-16 sm:py-24 bg-white dark:bg-gray-950 min-h-screen transition-colors duration-300">
 
-    <div class="max-w-2xl mx-auto px-6">
+    <div class="max-w-2xl mx-auto px-5 sm:px-6">
 
         {{-- Heading --}}
-        <div class="text-center mb-12" data-aos="fade-up">
-            <h2 class="text-3xl font-bold text-gray-900 dark:text-white">
+        <div class="text-center mb-8 sm:mb-12" data-aos="fade-up">
+            <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
                 Contact Me
             </h2>
             <p class="text-gray-500 dark:text-gray-400 mt-3">
@@ -48,7 +48,7 @@
         {{-- Form Card --}}
         <div class="bg-white dark:bg-gray-900
                     shadow-xl dark:shadow-gray-900/50
-                    rounded-2xl p-8 md:p-10
+                    rounded-2xl p-5 sm:p-8 md:p-10
                     border border-gray-200 dark:border-gray-700
                     transition-colors duration-300"
              data-aos="fade-up" data-aos-delay="100">
@@ -133,7 +133,7 @@
         </div>
 
         {{-- Contact info --}}
-        <div class="mt-10 flex justify-center gap-8 text-sm text-gray-500 dark:text-gray-400"
+        <div class="mt-8 sm:mt-10 flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-8 text-sm text-gray-500 dark:text-gray-400"
              data-aos="fade-up" data-aos-delay="200">
             <a href="mailto:kushal.upr@gmail.com"
                class="flex items-center gap-2 hover:text-indigo-600 dark:hover:text-indigo-400 transition">

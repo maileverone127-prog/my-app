@@ -4,7 +4,7 @@
 
 @php use Illuminate\Support\Str; @endphp
 
-<div class="bg-gray-50 dark:bg-gray-950 py-20 px-6 min-h-screen transition-colors duration-300">
+<div class="bg-gray-50 dark:bg-gray-950 py-14 sm:py-20 px-5 sm:px-6 min-h-screen transition-colors duration-300">
 
     <div class="max-w-6xl mx-auto">
 
@@ -20,8 +20,8 @@
         </a>
 
         {{-- Title --}}
-        <div class="text-center mb-14" data-aos="fade-up">
-            <h1 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white">
+        <div class="text-center mb-10 sm:mb-14" data-aos="fade-up">
+            <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 dark:text-white">
                 {{ $project->title }}
             </h1>
             @php
@@ -41,12 +41,12 @@
 
         {{-- Card --}}
         <div class="bg-white dark:bg-gray-900
-                    rounded-3xl shadow-xl dark:shadow-gray-900/50
+                    rounded-2xl sm:rounded-3xl shadow-xl dark:shadow-gray-900/50
                     border border-gray-100 dark:border-gray-700
-                    p-8 md:p-12 transition-colors duration-300"
+                    p-5 sm:p-8 md:p-12 transition-colors duration-300"
              data-aos="fade-up" data-aos-delay="100">
 
-            <div class="grid md:grid-cols-2 gap-12 items-center">
+            <div class="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
 
                 {{-- Project Image --}}
                 <div class="overflow-hidden rounded-2xl shadow-lg dark:shadow-gray-900/50">
@@ -56,15 +56,15 @@
                         @if(Str::startsWith($project->image, ['http://', 'https://']))
                             <img src="{{ $project->image }}"
                                  alt="{{ $project->title }}"
-                                 class="w-full h-[380px] object-cover hover:scale-105 transition duration-500">
+                                 class="w-full h-56 sm:h-72 md:h-[380px] object-cover hover:scale-105 transition duration-500">
                         @else
                             <img src="{{ asset('storage/'.$project->image) }}"
                                  alt="{{ $project->title }}"
-                                 class="w-full h-[380px] object-cover hover:scale-105 transition duration-500">
+                                 class="w-full h-56 sm:h-72 md:h-[380px] object-cover hover:scale-105 transition duration-500">
                         @endif
 
                     @else
-                        <div class="w-full h-[380px] flex items-center justify-center
+                        <div class="w-full h-56 sm:h-72 md:h-[380px] flex items-center justify-center
                                     bg-gray-100 dark:bg-gray-800">
                             <span class="text-gray-400 dark:text-gray-600">No Image Available</span>
                         </div>
@@ -75,11 +75,11 @@
                 {{-- Content --}}
                 <div>
 
-                    <h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-5">
+                    <h2 class="text-xl sm:text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-4 sm:mb-5">
                         Project Overview
                     </h2>
 
-                    <p class="text-gray-600 dark:text-gray-400 leading-relaxed text-base mb-8">
+                    <p class="text-gray-600 dark:text-gray-400 leading-relaxed text-sm sm:text-base mb-6 sm:mb-8">
                         {{ $project->description }}
                     </p>
 
@@ -120,14 +120,14 @@
 
         {{-- Related Projects --}}
         @if(isset($relatedProjects) && $relatedProjects->count())
-        <div class="mt-20">
+        <div class="mt-14 sm:mt-20">
 
-            <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-8 text-center"
+            <h2 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-6 sm:mb-8 text-center"
                 data-aos="fade-up">
                 Other Projects
             </h2>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
                 @foreach($relatedProjects as $i => $related)
                     <a href="{{ route('projects.show', $related->slug) }}"
                        class="group bg-white dark:bg-gray-900

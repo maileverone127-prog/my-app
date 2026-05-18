@@ -2,21 +2,21 @@
 
 @section('content')
 
-<section class="py-28 bg-gray-50 dark:bg-gray-950 min-h-screen transition-colors duration-300">
-    <div class="max-w-6xl mx-auto px-6">
+<section class="py-20 sm:py-28 bg-gray-50 dark:bg-gray-950 min-h-screen transition-colors duration-300">
+    <div class="max-w-6xl mx-auto px-5 sm:px-6">
 
         {{-- Page Title --}}
-        <div class="text-center mb-16" data-aos="fade-up">
-            <h1 class="text-4xl font-bold text-gray-900 dark:text-white">
+        <div class="text-center mb-10 sm:mb-16" data-aos="fade-up">
+            <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white">
                 My Projects
             </h1>
-            <p class="text-gray-500 dark:text-gray-400 mt-4 text-lg">
+            <p class="text-gray-500 dark:text-gray-400 mt-3 sm:mt-4 text-base sm:text-lg">
                 A collection of my recent work
             </p>
         </div>
 
         {{-- Project Grid --}}
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-8">
 
             @forelse($projects as $i => $project)
                 <div class="group bg-white dark:bg-gray-900
@@ -38,7 +38,7 @@
                         </div>
                     @endif
 
-                    <div class="p-6">
+                    <div class="p-4 sm:p-6">
 
                         <div class="flex items-start justify-between gap-2 mb-1">
                             <h3 class="text-xl font-semibold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-200">
