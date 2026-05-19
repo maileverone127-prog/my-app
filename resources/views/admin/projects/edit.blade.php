@@ -148,6 +148,33 @@
                 @enderror
             </div>
 
+            {{-- Live Demo URL --}}
+            <div style="margin-bottom:1.25rem">
+                <label for="link" class="a-label">Live Demo URL</label>
+                <div style="position:relative">
+                    <div style="position:absolute;left:.75rem;top:50%;transform:translateY(-50%);color:var(--textL);pointer-events:none">
+                        <svg style="width:16px;height:16px" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/>
+                        </svg>
+                    </div>
+                    <input
+                        type="url"
+                        id="link"
+                        name="link"
+                        value="{{ old('link', $project->link ?? '') }}"
+                        placeholder="https://yourproject.infinityfreeapp.com"
+                        class="a-input @error('link') !border-red-400 @enderror"
+                        style="padding-left:2.375rem"
+                    >
+                </div>
+                @error('link')
+                    <div style="color:#ef4444;font-size:.75rem;margin-top:.3rem" role="alert">{{ $message }}</div>
+                @enderror
+                <div style="font-size:.75rem;color:var(--textM);margin-top:.35rem">
+                    Paste your deployed project URL (InfinityFreeApp, Vercel, Render, etc.)
+                </div>
+            </div>
+
             {{-- Status --}}
             <div style="margin-bottom:1.25rem">
                 <label for="status" class="a-label">
@@ -356,8 +383,8 @@
 
         {{-- View live link --}}
         @if(!empty($project->slug))
-        <div class="a-card" style="padding:1.25rem">
-            <h3 style="font-size:.875rem;font-weight:600;color:var(--text);margin-bottom:.75rem">Live View</h3>
+        <div class="a-card" style="padding:1.25rem;display:flex;flex-direction:column;gap:.625rem">
+            <h3 style="font-size:.875rem;font-weight:600;color:var(--text);margin-bottom:.125rem">Quick Links</h3>
             <a href="{{ route('projects.show', $project->slug) }}"
                target="_blank"
                class="a-btn a-btn-ghost"
@@ -367,6 +394,17 @@
                 </svg>
                 View on Portfolio
             </a>
+            @if(!empty($project->link))
+            <a href="{{ $project->link }}"
+               target="_blank"
+               class="a-btn a-btn-primary"
+               style="width:100%;justify-content:center">
+                <svg style="width:15px;height:15px" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/>
+                </svg>
+                Open Live Demo →
+            </a>
+            @endif
         </div>
         @endif
 

@@ -125,6 +125,33 @@
                 @enderror
             </div>
 
+            {{-- Live Demo URL --}}
+            <div style="margin-bottom:1.25rem">
+                <label for="link" class="a-label">Live Demo URL</label>
+                <div style="position:relative">
+                    <div style="position:absolute;left:.75rem;top:50%;transform:translateY(-50%);color:var(--textL);pointer-events:none">
+                        <svg style="width:16px;height:16px" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/>
+                        </svg>
+                    </div>
+                    <input
+                        type="url"
+                        id="link"
+                        name="link"
+                        value="{{ old('link') }}"
+                        placeholder="https://yourproject.infinityfreeapp.com"
+                        class="a-input @error('link') border-red-400 @enderror"
+                        style="padding-left:2.375rem"
+                    >
+                </div>
+                @error('link')
+                    <div style="color:#ef4444;font-size:.75rem;margin-top:.3rem" role="alert">{{ $message }}</div>
+                @enderror
+                <div style="font-size:.75rem;color:var(--textM);margin-top:.35rem">
+                    Paste your deployed project URL (InfinityFreeApp, Vercel, Render, etc.)
+                </div>
+            </div>
+
             {{-- Status --}}
             <div style="margin-bottom:1.25rem">
                 <label for="status" class="a-label">

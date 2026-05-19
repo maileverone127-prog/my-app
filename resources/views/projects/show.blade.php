@@ -85,21 +85,24 @@
 
                     <div class="flex flex-wrap gap-3">
 
-                        @if($project->link)
+                        @if(!empty($project->link))
                             <a href="{{ $project->link }}"
                                target="_blank"
-                               class="inline-flex items-center gap-2 px-6 py-3
+                               class="inline-flex items-center gap-2 px-5 sm:px-6 py-3
                                       bg-indigo-600 text-white rounded-xl shadow-md
                                       hover:bg-indigo-700 hover:shadow-lg
-                                      transition duration-300 hover:-translate-y-0.5 font-medium">
-                                Visit Live Project →
+                                      transition duration-300 hover:-translate-y-0.5 font-semibold">
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/>
+                                </svg>
+                                Live Demo →
                             </a>
                         @endif
 
                         @if(!empty($project->github_link))
                             <a href="{{ $project->github_link }}"
                                target="_blank"
-                               class="inline-flex items-center gap-2 px-6 py-3
+                               class="inline-flex items-center gap-2 px-5 sm:px-6 py-3
                                       border border-gray-300 dark:border-gray-600
                                       text-gray-700 dark:text-gray-300
                                       rounded-xl hover:border-indigo-500 dark:hover:border-indigo-400
@@ -111,6 +114,15 @@
                         @endif
 
                     </div>
+
+                    @if(!empty($project->link))
+                    <div class="mt-4 flex items-center gap-2 text-xs text-gray-400 dark:text-gray-500">
+                        <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
+                        </svg>
+                        <span class="truncate">{{ $project->link }}</span>
+                    </div>
+                    @endif
 
                 </div>
 

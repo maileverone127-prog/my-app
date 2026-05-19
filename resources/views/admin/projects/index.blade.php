@@ -125,7 +125,7 @@
 
                     {{-- Footer actions --}}
                     <div style="display:flex;align-items:center;justify-content:space-between;margin-top:1rem;padding-top:.875rem;border-top:1px solid var(--border)">
-                        <div style="display:flex;gap:.375rem">
+                        <div style="display:flex;gap:.375rem;flex-wrap:wrap">
                             <a href="{{ route('admin.projects.edit', $project) }}"
                                class="a-btn a-btn-ghost"
                                style="padding:.375rem .75rem;font-size:.8125rem"
@@ -136,12 +136,25 @@
                                 Edit
                             </a>
 
+                            @if(!empty($project->link))
+                            <a href="{{ $project->link }}"
+                               target="_blank"
+                               class="a-btn a-btn-primary"
+                               style="padding:.375rem .75rem;font-size:.8125rem"
+                               title="Open live demo">
+                                <svg style="width:13px;height:13px" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/>
+                                </svg>
+                                Live
+                            </a>
+                            @endif
+
                             @if(!empty($project->slug))
                             <a href="{{ route('projects.show', $project->slug) }}"
                                target="_blank"
                                class="a-btn a-btn-ghost"
                                style="padding:.375rem .75rem;font-size:.8125rem"
-                               title="View live project">
+                               title="View on portfolio">
                                 <svg style="width:13px;height:13px" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
                                 </svg>
