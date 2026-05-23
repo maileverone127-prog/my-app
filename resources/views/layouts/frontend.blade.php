@@ -253,7 +253,7 @@
          x-transition:leave-start="opacity-100 translate-y-0 scale-100"
          x-transition:leave-end="opacity-0 translate-y-4 scale-95"
          x-cloak
-         style="position:absolute;bottom:3.75rem;right:0;width:290px;background:white;border-radius:1rem;box-shadow:0 20px 60px rgba(0,0,0,.18);z-index:9999;overflow:hidden;border:1px solid #e5e7eb"
+         style="position:absolute;bottom:3.75rem;right:0;width:240px;background:white;border-radius:1rem;box-shadow:0 20px 60px rgba(0,0,0,.18);z-index:9999;overflow:hidden;border:1px solid #e5e7eb"
          class="dark:!bg-gray-900 dark:!border-gray-700">
 
         {{-- Header --}}
@@ -274,51 +274,36 @@
 
         <div style="padding:1rem 1.25rem 1.25rem">
 
-            {{-- Accent Color --}}
-            <div style="font-size:.6875rem;font-weight:600;color:#9ca3af;letter-spacing:.07em;text-transform:uppercase;margin-bottom:.625rem">
-                Accent Color
-            </div>
-            <div style="display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.125rem">
-                <template x-for="t in $store.adm.themes" :key="t.id">
-                    <button
-                        @click="$store.adm.setTheme(t.id)"
-                        :title="t.label"
-                        :style="`width:30px;height:30px;border-radius:50%;background:${t.color};border:2.5px solid ${$store.adm.theme===t.id ? t.color : 'transparent'};outline:2px solid ${$store.adm.theme===t.id ? t.color : 'transparent'};outline-offset:2px;cursor:pointer;transition:transform .15s`"
-                        :class="$store.adm.theme===t.id ? 'scale-110' : 'hover:scale-105'"
-                    ></button>
-                </template>
-            </div>
-
             {{-- Appearance --}}
-            <div style="font-size:.6875rem;font-weight:600;color:#9ca3af;letter-spacing:.07em;text-transform:uppercase;margin-bottom:.625rem">
+            <div style="font-size:.6875rem;font-weight:600;color:#9ca3af;letter-spacing:.07em;text-transform:uppercase;margin-bottom:.75rem">
                 Appearance
             </div>
-            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.375rem;margin-bottom:1rem">
-                <template x-for="[mode, icon, label] in [['light','☀️','Light'],['dark','🌙','Dark'],['system','🖥','System']]">
-                    <button
-                        @click="$store.adm.setDark(mode)"
-                        :style="$store.adm.dark===mode
-                            ? 'background:var(--p-50,#eef2ff);border:1.5px solid var(--p,#6366f1);color:var(--p,#6366f1)'
-                            : 'background:#f9fafb;border:1.5px solid #e5e7eb;color:#6b7280'"
-                        style="border-radius:.5rem;padding:.4rem .25rem;font-size:.75rem;font-weight:500;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:.2rem;transition:all .15s"
-                        class="dark:!bg-gray-800 dark:!border-gray-700"
-                    >
-                        <span x-text="icon" style="font-size:1rem"></span>
-                        <span x-text="label"></span>
-                    </button>
-                </template>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin-bottom:1.125rem">
+                @foreach([['light','☀️','Light'],['dark','🌙','Dark'],['system','🖥️','System']] as [$mode,$icon,$label])
+                <button
+                    @click="$store.adm.setDark('{{ $mode }}')"
+                    :style="$store.adm.dark==='{{ $mode }}'
+                        ? 'background:#eef2ff;border:1.5px solid #6366f1;color:#6366f1'
+                        : 'background:#f9fafb;border:1.5px solid #e5e7eb;color:#6b7280'"
+                    style="border-radius:.625rem;padding:.6rem .25rem;font-size:.8rem;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:.3rem;transition:all .15s"
+                    class="dark:!bg-gray-800 dark:!border-gray-700 dark:!text-gray-300"
+                >
+                    <span style="font-size:1.25rem">{{ $icon }}</span>
+                    <span>{{ $label }}</span>
+                </button>
+                @endforeach
             </div>
 
             {{-- Reset --}}
-            <button @click="$store.adm.reset()"
+            <button @click="$store.adm.setDark('light')"
                     style="width:100%;padding:.5rem;border-radius:.5rem;border:1px solid #e5e7eb;background:transparent;color:#9ca3af;font-size:.8125rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.375rem;transition:all .15s"
                     class="dark:!border-gray-700 dark:!text-gray-500"
-                    onmouseover="this.style.borderColor='#ef4444';this.style.color='#ef4444'"
+                    onmouseover="this.style.borderColor='#6366f1';this.style.color='#6366f1'"
                     onmouseout="this.style.borderColor='';this.style.color=''">
                 <svg style="width:13px;height:13px" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
                 </svg>
-                Reset to Defaults
+                Reset to Light Mode
             </button>
 
         </div>
