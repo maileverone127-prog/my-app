@@ -162,7 +162,7 @@
                         id="link"
                         name="link"
                         value="{{ old('link', $project->link ?? '') }}"
-                        placeholder="https://yourproject.infinityfreeapp.com"
+                        placeholder=""
                         class="a-input @error('link') !border-red-400 @enderror"
                         style="padding-left:2.375rem"
                     >
