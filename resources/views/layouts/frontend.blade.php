@@ -226,5 +226,122 @@
     }, 3000);
 </script>
 
+{{-- ===============================================================
+     FRONTEND THEME CUSTOMIZER (floating)
+================================================================ --}}
+<div x-data="{ open: false }" style="position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999">
+
+    {{-- Backdrop --}}
+    <div x-show="open"
+         x-transition:enter="transition ease-out duration-200"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-150"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         x-cloak
+         @click="open = false"
+         style="position:fixed;inset:0;background:rgba(0,0,0,.25);z-index:9998;backdrop-filter:blur(2px)">
+    </div>
+
+    {{-- Panel --}}
+    <div x-show="open"
+         x-transition:enter="transition ease-out duration-250"
+         x-transition:enter-start="opacity-0 translate-y-4 scale-95"
+         x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+         x-transition:leave="transition ease-in duration-150"
+         x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+         x-transition:leave-end="opacity-0 translate-y-4 scale-95"
+         x-cloak
+         style="position:absolute;bottom:3.75rem;right:0;width:290px;background:white;border-radius:1rem;box-shadow:0 20px 60px rgba(0,0,0,.18);z-index:9999;overflow:hidden;border:1px solid #e5e7eb"
+         class="dark:!bg-gray-900 dark:!border-gray-700">
+
+        {{-- Header --}}
+        <div style="padding:1rem 1.25rem .75rem;border-bottom:1px solid #f3f4f6;display:flex;align-items:center;justify-content:space-between"
+             class="dark:!border-gray-800">
+            <div>
+                <div style="font-size:.9375rem;font-weight:700;color:#111827" class="dark:!text-white">Theme</div>
+                <div style="font-size:.75rem;color:#9ca3af;margin-top:.1rem">Personalize your view</div>
+            </div>
+            <button @click="open = false"
+                    style="width:28px;height:28px;border-radius:50%;border:none;background:#f3f4f6;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#6b7280"
+                    class="dark:!bg-gray-800 dark:!text-gray-400">
+                <svg style="width:14px;height:14px" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+
+        <div style="padding:1rem 1.25rem 1.25rem">
+
+            {{-- Accent Color --}}
+            <div style="font-size:.6875rem;font-weight:600;color:#9ca3af;letter-spacing:.07em;text-transform:uppercase;margin-bottom:.625rem">
+                Accent Color
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.125rem">
+                <template x-for="t in $store.adm.themes" :key="t.id">
+                    <button
+                        @click="$store.adm.setTheme(t.id)"
+                        :title="t.label"
+                        :style="`width:30px;height:30px;border-radius:50%;background:${t.color};border:2.5px solid ${$store.adm.theme===t.id ? t.color : 'transparent'};outline:2px solid ${$store.adm.theme===t.id ? t.color : 'transparent'};outline-offset:2px;cursor:pointer;transition:transform .15s`"
+                        :class="$store.adm.theme===t.id ? 'scale-110' : 'hover:scale-105'"
+                    ></button>
+                </template>
+            </div>
+
+            {{-- Appearance --}}
+            <div style="font-size:.6875rem;font-weight:600;color:#9ca3af;letter-spacing:.07em;text-transform:uppercase;margin-bottom:.625rem">
+                Appearance
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.375rem;margin-bottom:1rem">
+                <template x-for="[mode, icon, label] in [['light','☀️','Light'],['dark','🌙','Dark'],['system','🖥','System']]">
+                    <button
+                        @click="$store.adm.setDark(mode)"
+                        :style="$store.adm.dark===mode
+                            ? 'background:var(--p-50,#eef2ff);border:1.5px solid var(--p,#6366f1);color:var(--p,#6366f1)'
+                            : 'background:#f9fafb;border:1.5px solid #e5e7eb;color:#6b7280'"
+                        style="border-radius:.5rem;padding:.4rem .25rem;font-size:.75rem;font-weight:500;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:.2rem;transition:all .15s"
+                        class="dark:!bg-gray-800 dark:!border-gray-700"
+                    >
+                        <span x-text="icon" style="font-size:1rem"></span>
+                        <span x-text="label"></span>
+                    </button>
+                </template>
+            </div>
+
+            {{-- Reset --}}
+            <button @click="$store.adm.reset()"
+                    style="width:100%;padding:.5rem;border-radius:.5rem;border:1px solid #e5e7eb;background:transparent;color:#9ca3af;font-size:.8125rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.375rem;transition:all .15s"
+                    class="dark:!border-gray-700 dark:!text-gray-500"
+                    onmouseover="this.style.borderColor='#ef4444';this.style.color='#ef4444'"
+                    onmouseout="this.style.borderColor='';this.style.color=''">
+                <svg style="width:13px;height:13px" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                </svg>
+                Reset to Defaults
+            </button>
+
+        </div>
+    </div>
+
+    {{-- Floating Toggle Button --}}
+    <button @click="open = !open"
+            :class="open ? 'rotate-90' : ''"
+            style="width:48px;height:48px;border-radius:50%;border:none;cursor:pointer;
+                   background:var(--p,#6366f1);color:white;
+                   box-shadow:0 4px 20px rgba(99,102,241,.45);
+                   display:flex;align-items:center;justify-content:center;
+                   transition:transform .3s,box-shadow .2s;position:relative;z-index:9999"
+            onmouseover="this.style.boxShadow='0 6px 28px rgba(99,102,241,.6)'"
+            onmouseout="this.style.boxShadow='0 4px 20px rgba(99,102,241,.45)'"
+            title="Customize Theme"
+            aria-label="Open Theme Customizer">
+        <svg style="width:20px;height:20px" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"/>
+        </svg>
+    </button>
+
+</div>
+
 </body>
 </html>
