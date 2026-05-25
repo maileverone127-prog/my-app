@@ -27,7 +27,7 @@
 
         <h2 class="mt-3 sm:mt-4 text-base sm:text-xl md:text-2xl text-indigo-600 dark:text-indigo-400 font-semibold leading-snug"
             data-aos="fade-up" data-aos-delay="150">
-            Laravel Developer &nbsp;·&nbsp; Backend Specialist &nbsp;·&nbsp; Vibe Coder
+            Frontend Developer &nbsp;·&nbsp; Backend Specialist &nbsp;·&nbsp; Vibe Coder
         </h2>
 
         <p class="mt-5 sm:mt-6 text-base sm:text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto leading-relaxed"
