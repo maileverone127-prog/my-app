@@ -1,3 +1,16 @@
+# services:
+#   - type: web
+#     name: kushal-portfolio
+#     runtime: php
+#     buildCommand: |
+#       composer install --no-dev --optimize-autoloader
+#       php artisan key:generate
+#       php artisan migrate --force
+#       php artisan config:clear
+#       php artisan cache:clear
+#       php artisan route:clear
+#       php artisan view:clear
+#     startCommand: php -S 0.0.0.0:$PORT -t public
 databases:
   - name: my-app-db
     plan: free
@@ -7,6 +20,10 @@ services:
     name: kushal-portfolio
     runtime: docker
     envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
       - key: DB_CONNECTION
         value: pgsql
       - key: DATABASE_URL
@@ -15,5 +32,3 @@ services:
           property: connectionString
       - key: APP_KEY
         generateValue: true
-      - key: APP_ENV
-        value: production
