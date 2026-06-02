@@ -1,5 +1,5 @@
 <?php
-
+//funcntion bootstrap the application and return the application instance
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
