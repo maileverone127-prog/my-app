@@ -1,7 +1,31 @@
+# services:
+#   - type: web
+#     name: kushal-portfolio
+#     runtime: php
+#     buildCommand: |
+#       composer install --no-dev --optimize-autoloader
+#       php artisan key:generate
+#       php artisan migrate --force
+#       php artisan config:clear
+#       php artisan cache:clear
+#       php artisan route:clear
+#       php artisan view:clear
+#     startCommand: php -S 0.0.0.0:$PORT -t public
+databases:
+  - name: my-app-db
+    plan: free
+
 services:
   - type: web
     name: kushal-portfolio
     runtime: php
+    envVars:
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DATABASE_URL
+        fromDatabase:
+          name: my-app-db
+          property: connectionString
     buildCommand: |
       composer install --no-dev --optimize-autoloader
       php artisan key:generate
