@@ -22,12 +22,12 @@
 
         <h1 class="mt-6 sm:mt-8 text-4xl sm:text-5xl md:text-6xl font-extrabold text-gray-900 dark:text-white tracking-tight"
             data-aos="fade-up" data-aos-delay="100">
-            Kushal Ghimire
+            {{ $settings->hero_title }}
         </h1>
 
         <h2 class="mt-3 sm:mt-4 text-base sm:text-xl md:text-2xl text-indigo-600 dark:text-indigo-400 font-semibold leading-snug"
             data-aos="fade-up" data-aos-delay="150">
-            Frontend Developer &nbsp;·&nbsp; Backend Specialist &nbsp;·&nbsp; Vibe Coder
+            {{ $settings->hero_subtitle }}
         </h2>
 
         <p class="mt-5 sm:mt-6 text-base sm:text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto leading-relaxed"
@@ -61,22 +61,28 @@
             {{-- Social icons --}}
             <div class="flex items-center gap-7 sm:gap-8 text-2xl sm:text-3xl text-gray-500 dark:text-gray-400">
 
-                <a href="https://github.com/Ghimire-Kushal"
+                @if($settings->github_url)
+                <a href="{{ $settings->github_url }}"
                    target="_blank"
                    class="hover:text-gray-900 dark:hover:text-white transition duration-200 hover:scale-110 transform">
                     <i class="fab fa-github"></i>
                 </a>
+                @endif
 
-                <a href="https://www.linkedin.com/in/kushal-ghimire-9448093b1/"
+                @if($settings->linkedin_url)
+                <a href="{{ $settings->linkedin_url }}"
                    target="_blank"
                    class="hover:text-blue-600 dark:hover:text-blue-400 transition duration-200 hover:scale-110 transform">
                     <i class="fab fa-linkedin"></i>
                 </a>
+                @endif
 
-                <a href="mailto:kushal.upr@gmail.com"
+                @if($settings->email)
+                <a href="mailto:{{ $settings->email }}"
                    class="hover:text-red-500 dark:hover:text-red-400 transition duration-200 hover:scale-110 transform">
                     <i class="fas fa-envelope"></i>
                 </a>
+                @endif
 
             </div>
 
@@ -206,7 +212,7 @@
      FOOTER
 ================================================================ --}}
 <footer class="bg-gray-900 dark:bg-gray-950 text-gray-400 py-10 text-center text-sm border-t border-gray-800 dark:border-gray-800 transition-colors duration-300">
-    © {{ date('Y') }} Kushal Ghimire. All rights reserved.
+    © {{ date('Y') }} {{ $settings->hero_title }}. All rights reserved.
 </footer>
 
 @endsection

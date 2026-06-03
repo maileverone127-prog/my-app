@@ -1,19 +1,18 @@
 <?php
 
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
-use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
-
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\BackupController;
+use App\Http\Controllers\SettingController;
 
 /*
 |--------------------------------------------------------------------------
-| Public Routess
+| Public Routes
 |--------------------------------------------------------------------------
 */
 
@@ -31,13 +30,12 @@ Route::get('/projects/{project:slug}', [ProjectController::class, 'show'])->name
 Route::get('/download-resume', function () {
     $path = public_path('resume.pdf');
     abort_if(!file_exists($path), 404);
-
     return response()->download($path, 'Kushal-Ghimire-Resume.pdf');
 })->name('resume.download');
 
 /*
 |--------------------------------------------------------------------------
-| Custom Register Route (/kushal)
+| Hidden Admin Registration (only route to create an account)
 |--------------------------------------------------------------------------
 */
 
@@ -46,16 +44,14 @@ Route::post('/kushal', [RegisteredUserController::class, 'store'])->name('kushal
 
 /*
 |--------------------------------------------------------------------------
-| Authenticated Routes
+| Authenticated User Routes
 |--------------------------------------------------------------------------
 */
 
 Route::middleware('auth')->group(function () {
-
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
 });
 
 /*
@@ -69,74 +65,42 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [AdminController::class, 'index'])->name('dashboard');
     Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard.alt');
 
+    // Projects
     Route::get('/projects', [ProjectController::class, 'adminIndex'])->name('projects.index');
-
     Route::get('/projects/create', [ProjectController::class, 'create'])->name('projects.create');
     Route::post('/projects', [ProjectController::class, 'store'])->name('projects.store');
-
     Route::get('/projects/{project}', [ProjectController::class, 'adminShow'])->name('projects.show');
-
     Route::get('/projects/{project}/edit', [ProjectController::class, 'edit'])->name('projects.edit');
     Route::put('/projects/{project}', [ProjectController::class, 'update'])->name('projects.update');
-
     Route::delete('/projects/{project}', [ProjectController::class, 'destroy'])->name('projects.destroy');
+
+    // Messages
+    Route::get('/messages', [ContactController::class, 'adminIndex'])->name('messages.index');
+    Route::get('/messages/{message}', [ContactController::class, 'adminShow'])->name('messages.show');
+    Route::patch('/messages/{message}/read', [ContactController::class, 'markRead'])->name('messages.read');
+    Route::patch('/messages/{message}/unread', [ContactController::class, 'markUnread'])->name('messages.unread');
+    Route::delete('/messages/{message}', [ContactController::class, 'destroy'])->name('messages.destroy');
+
+    // Settings
+    Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
+    Route::post('/settings', [SettingController::class, 'update'])->name('settings.update');
+
+    // Backup & Restore
+    Route::get('/backup', [BackupController::class, 'index'])->name('backup.index');
+    Route::get('/backup/export/all', [BackupController::class, 'exportAll'])->name('backup.export.all');
+    Route::get('/backup/export/{project}', [BackupController::class, 'exportSingle'])->name('backup.export.single');
+    Route::post('/backup/import', [BackupController::class, 'import'])->name('backup.import');
 
 });
 
 /*
 |--------------------------------------------------------------------------
-| Redirect Dashboard
+| Redirect /dashboard → home (Breeze default redirect override)
 |--------------------------------------------------------------------------
 */
 
 Route::get('/dashboard', function () {
     return redirect()->route('home');
-});
-
-/*
-|--------------------------------------------------------------------------
-| TEST CLOUDINARY ROUTE (REMOVE AFTER TESTING) test 
-|--------------------------------------------------------------------------
-*/
-
-
-Route::get('/cloudinary-test', function () {
-    try {
-        $result = Cloudinary::uploadApi()->upload(
-            'https://res.cloudinary.com/demo/image/upload/sample.jpg'
-        );
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Cloudinary is working ✅',
-            'url' => $result['secure_url'],
-        ]);
-
-    } catch (\Throwable $e) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Cloudinary upload failed ❌',
-            'error' => $e->getMessage(),
-        ], 500);
-    }
-});
-
-/*
-|--------------------------------------------------------------------------
-| TEST MAIL ROUTE (REMOVE AFTER TESTING)
-test
-|--------------------------------------------------------------------------
-*/
-
-Route::get('/test-mail', function () {
-
-    Mail::raw('Test Email from Kushal Portfolio', function ($msg) {
-        $msg->to('kushal.upr@gmail.com')
-            ->from('hello@kushalghimire57.com.np', 'Kushal Portfolio')
-            ->subject('TEST EMAIL');
-    });
-
-    return "Mail Sent ✅";
 });
 
 require __DIR__.'/auth.php';

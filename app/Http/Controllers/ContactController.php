@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\NewContactMessage;
+use App\Models\Message;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
@@ -10,37 +12,56 @@ class ContactController extends Controller
 {
     public function store(Request $request)
     {
-        // ✅ Validate input
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'message' => 'required|string',
+            'name'    => 'required|string|max:255',
+            'email'   => 'required|email|max:255',
+            'message' => 'required|string|max:5000',
         ]);
 
+        // Save to database
+        $message = Message::create($validated);
+
+        // Send email notification
         try {
-
-            // ✅ Send email
-            Mail::raw(
-                "New Contact Message\n\n" .
-                "Name: {$validated['name']}\n" .
-                "Email: {$validated['email']}\n\n" .
-                "Message:\n{$validated['message']}",
-                function ($message) use ($validated) {
-
-                    $message->to('kushal.upr@gmail.com') // ✅ RECEIVE HERE
-                            ->subject('📩 New Contact Message')
-                            ->replyTo($validated['email'], $validated['name']);
-                }
-            );
-
-            return back()->with('success', '✅ Message sent successfully!');
-
+            Mail::to('kushal.upr@gmail.com')->send(new NewContactMessage($message));
         } catch (\Exception $e) {
-
-            // ✅ Log full error (VERY IMPORTANT)
-            Log::error('MAIL ERROR: ' . $e->getMessage());
-
-            return back()->with('error', '❌ Failed to send message. Please try again later.');
+            Log::error('Contact mail failed: ' . $e->getMessage());
         }
+
+        return back()->with('success', '✅ Message sent successfully! I\'ll get back to you soon.');
+    }
+
+    /* ================= ADMIN ================= */
+
+    public function adminIndex()
+    {
+        $messages = Message::latest()->paginate(15);
+        return view('admin.messages.index', compact('messages'));
+    }
+
+    public function adminShow(Message $message)
+    {
+        if (!$message->isRead()) {
+            $message->update(['read_at' => now()]);
+        }
+        return view('admin.messages.show', compact('message'));
+    }
+
+    public function markRead(Message $message)
+    {
+        $message->update(['read_at' => now()]);
+        return back()->with('success', 'Message marked as read.');
+    }
+
+    public function markUnread(Message $message)
+    {
+        $message->update(['read_at' => null]);
+        return back()->with('success', 'Message marked as unread.');
+    }
+
+    public function destroy(Message $message)
+    {
+        $message->delete();
+        return redirect()->route('admin.messages.index')->with('success', 'Message deleted.');
     }
 }

@@ -1,89 +1,69 @@
 FROM php:8.4-apache
 
-# -----------------------------
-# Install system dependencies
-# -----------------------------
+# System dependencies
 RUN apt-get update && apt-get install -y \
-    git \
-    curl \
-    unzip \
-    libpq-dev \
-    libzip-dev \
-    zip \
-    gnupg \
-    && docker-php-ext-install pdo pdo_pgsql zip
+    git curl unzip libpq-dev libzip-dev zip gnupg \
+    && docker-php-ext-install pdo pdo_pgsql pdo_mysql zip \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# -----------------------------
 # Enable Apache rewrite
-# -----------------------------
 RUN a2enmod rewrite
 
-# -----------------------------
-# Install Node.js
-# -----------------------------
-RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
-    && apt-get install -y nodejs
+# Node.js 20 LTS
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs && apt-get clean
 
-# -----------------------------
-# Install Composer
-# -----------------------------
+# Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# -----------------------------
-# Set working directory
-# -----------------------------
 WORKDIR /var/www/html
 
-# -----------------------------
-# Copy project files
-# -----------------------------
+# Copy and install dependencies first (better layer caching)
+COPY composer.json composer.lock ./
+RUN composer install --no-dev --no-scripts --optimize-autoloader
+
+COPY package.json package-lock.json ./
+RUN npm ci --omit=dev
+
+# Copy all project files
 COPY . .
 
-# -----------------------------
-# Install PHP dependencies
-# -----------------------------
-RUN composer install --no-dev --optimize-autoloader
-
-# -----------------------------
 # Build frontend assets
-# -----------------------------
-RUN npm install && npm run build
+RUN npm run build
 
-# -----------------------------
-# Set Apache document root
-# -----------------------------
+# Run composer post-install scripts after full copy
+RUN composer run-script post-autoload-dump || true
+
+# Apache document root → public/
 RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
 
-# -----------------------------
-# Create Laravel required folders
-# -----------------------------
+# Apache .htaccess support
+RUN sed -i '/<Directory \/var\/www\/>/,/<\/Directory>/ s/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
+
+# Create required Laravel directories
 RUN mkdir -p \
     storage/logs \
-    storage/framework/cache \
+    storage/app/public \
+    storage/framework/cache/data \
     storage/framework/sessions \
     storage/framework/views \
     bootstrap/cache
 
-# -----------------------------
-# Fix permissions
-# -----------------------------
-RUN chown -R www-data:www-data /var/www/html && \
-    chmod -R 775 storage bootstrap/cache
+# Permissions
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 775 storage bootstrap/cache
 
-# -----------------------------
-# Apache port (Render compatibility)
-# -----------------------------
+# Render uses port 10000
 RUN sed -i 's/80/10000/g' /etc/apache2/ports.conf /etc/apache2/sites-available/000-default.conf
 
 EXPOSE 10000
 
-# -----------------------------
-# ✅ RUNTIME FIX (IMPORTANT)
-# -----------------------------
-CMD rm -rf public/storage && \
-    php artisan storage:link && \
-    php artisan config:clear && \
-    php artisan cache:clear && \
-    php artisan view:clear && \
+# Startup: storage link → migrate → cache → serve
+CMD bash -c "\
+    rm -f public/storage && \
+    php artisan storage:link --force && \
+    php artisan config:cache && \
+    php artisan route:cache && \
+    php artisan view:cache && \
     php artisan migrate --force && \
-    apache2-foreground
+    apache2-foreground"

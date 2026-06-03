@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kushal Portfolio</title>
+    <title>{{ isset($settings) ? $settings->site_name : 'Kushal Portfolio' }}</title>
 
     {{-- =====================================================
          ANTI-FOUC: apply stored dark mode BEFORE any paint
@@ -58,7 +58,7 @@
 
         {{-- LOGO --}}
         <a href="{{ url('/') }}" class="text-xl font-bold text-indigo-600 dark:text-indigo-400">
-            Kushal.dev
+            {{ isset($settings) ? $settings->site_name : 'Kushal.dev' }}
         </a>
 
         {{-- DESKTOP MENU --}}

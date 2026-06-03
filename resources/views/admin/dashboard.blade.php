@@ -14,6 +14,7 @@
     $projectCount   = \App\Models\Project::count();
     $recentProjects = \App\Models\Project::latest()->take(5)->get();
     $messageCount   = \App\Models\Message::count();
+    $unreadCount    = \App\Models\Message::unread()->count();
     $completedCount = \App\Models\Project::where('status', 'completed')->count();
     $ongoingCount   = \App\Models\Project::where('status', 'ongoing')->count();
     $plannedCount   = \App\Models\Project::where('status', 'planned')->count();
@@ -119,8 +120,15 @@
             </svg>
         </div>
         <div>
-            <div class="stat-val">{{ $messageCount }}</div>
-            <div class="stat-label">Messages</div>
+            <a href="{{ route('admin.messages.index') }}" style="text-decoration:none;color:inherit">
+                <div class="stat-val">{{ $messageCount }}</div>
+                <div class="stat-label">
+                    Messages
+                    @if($unreadCount > 0)
+                        <span style="background:#6366f1;color:#fff;font-size:.65rem;font-weight:700;padding:.1rem .4rem;border-radius:999px;margin-left:4px">{{ $unreadCount }} new</span>
+                    @endif
+                </div>
+            </a>
         </div>
     </div>
 
