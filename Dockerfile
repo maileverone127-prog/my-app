@@ -23,13 +23,16 @@ COPY composer.json composer.lock ./
 RUN composer install --no-dev --no-scripts --optimize-autoloader
 
 COPY package.json package-lock.json ./
-RUN npm ci --omit=dev
+RUN npm ci
 
 # Copy all project files
 COPY . .
 
 # Build frontend assets
 RUN npm run build
+
+# Remove dev dependencies after build
+RUN npm prune --omit=dev
 
 # Run composer post-install scripts after full copy
 RUN composer run-script post-autoload-dump || true
