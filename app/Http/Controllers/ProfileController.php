@@ -9,8 +9,6 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\View\View;
-use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
-
 class ProfileController extends Controller
 {
     public function edit(Request $request): View
@@ -31,7 +29,7 @@ class ProfileController extends Controller
         $user->email = $request->email;
 
         if ($request->hasFile('avatar')) {
-            $uploaded = Cloudinary::upload($request->file('avatar')->getRealPath(), [
+            $uploaded = cloudinary()->upload($request->file('avatar')->getRealPath(), [
                 'folder' => 'portfolio/avatars',
                 'transformation' => ['width' => 300, 'height' => 300, 'crop' => 'fill'],
             ]);
