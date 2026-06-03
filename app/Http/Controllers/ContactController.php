@@ -22,13 +22,20 @@ class ContactController extends Controller
         $message = Message::create($validated);
 
         // Send email notification
+        $mailSent = false;
         try {
-            Mail::to('kushal.upr@gmail.com')->send(new NewContactMessage($message));
+            $recipient = config('mail.contact_recipient', config('mail.from.address'));
+            Mail::to($recipient)->send(new NewContactMessage($message));
+            $mailSent = true;
         } catch (\Exception $e) {
             Log::error('Contact mail failed: ' . $e->getMessage());
         }
 
-        return back()->with('success', '✅ Message sent successfully! I\'ll get back to you soon.');
+        $successMsg = $mailSent
+            ? '✅ Message sent! I\'ll get back to you soon.'
+            : '✅ Message received! (Email notification unavailable, but your message is saved.)';
+
+        return back()->with('success', $successMsg);
     }
 
     /* ================= ADMIN ================= */

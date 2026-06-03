@@ -65,6 +65,37 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [AdminController::class, 'index'])->name('dashboard');
     Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard.alt');
 
+    // Mail test (admin only — remove after confirming mail works in production)
+    Route::get('/test-mail', function () {
+        $dummy = new \App\Models\Message([
+            'id'      => 0,
+            'name'    => 'Test Sender',
+            'email'   => 'test@example.com',
+            'message' => "This is a test email sent from the admin panel.\n\nIf you received this, your mail configuration is working correctly.",
+        ]);
+        $dummy->created_at = now();
+
+        try {
+            $recipient = config('mail.contact_recipient', config('mail.from.address'));
+            \Illuminate\Support\Facades\Mail::to($recipient)
+                ->send(new \App\Mail\NewContactMessage($dummy));
+            return response()->json([
+                'status'    => 'sent',
+                'mailer'    => config('mail.default'),
+                'recipient' => $recipient,
+                'note'      => config('mail.default') === 'log'
+                    ? 'Email written to storage/logs/laravel.log (log driver active)'
+                    : 'Email sent successfully.',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'failed',
+                'error'  => $e->getMessage(),
+                'mailer' => config('mail.default'),
+            ], 500);
+        }
+    })->name('admin.test-mail');
+
     // Projects
     Route::get('/projects', [ProjectController::class, 'adminIndex'])->name('projects.index');
     Route::get('/projects/create', [ProjectController::class, 'create'])->name('projects.create');

@@ -2,52 +2,37 @@
 
 return [
 
-    /*
-    |--------------------------------------------------------------------------
-    | Default Mailer
-    |--------------------------------------------------------------------------
-    */
-
-    'default' => env('MAIL_MAILER', 'resend'), // ✅ force resend
-
-    /*
-    |--------------------------------------------------------------------------
-    | Mailer Configurations
-    |--------------------------------------------------------------------------
-    */
+    'default' => env('MAIL_MAILER', 'log'),
 
     'mailers' => [
 
-        // ❌ NOT USED (but keep for fallback)
         'smtp' => [
-            'transport' => 'smtp',
-            'host' => env('MAIL_HOST'),
-            'port' => env('MAIL_PORT'),
-            'username' => env('MAIL_USERNAME'),
-            'password' => env('MAIL_PASSWORD'),
-            'timeout' => null,
+            'transport'  => 'smtp',
+            'host'       => env('MAIL_HOST', 'smtp.gmail.com'),
+            'port'       => env('MAIL_PORT', 587),
+            'encryption' => env('MAIL_ENCRYPTION', 'tls'),
+            'username'   => env('MAIL_USERNAME'),
+            'password'   => env('MAIL_PASSWORD'),
+            'timeout'    => 10,
         ],
 
-        // ✅ RESEND (MAIN)
         'resend' => [
             'transport' => 'resend',
         ],
 
-        // fallback
         'log' => [
             'transport' => 'log',
+            'channel'   => env('LOG_CHANNEL', 'stack'),
         ],
+
     ],
 
-    /*
-    |--------------------------------------------------------------------------
-    | Global "From" Addresss
-    |--------------------------------------------------------------------------
-    */
+    // Who receives contact form notifications
+    'contact_recipient' => env('CONTACT_EMAIL', env('MAIL_FROM_ADDRESS', 'kushal.upr@gmail.com')),
 
     'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', 'onboarding@resend.dev'),
-        'name' => env('MAIL_FROM_NAME', 'Kushal Portfolio'),
+        'address' => env('MAIL_FROM_ADDRESS', 'hello@kushalghimire57.com.np'),
+        'name'    => env('MAIL_FROM_NAME', 'Kushal Portfolio'),
     ],
 
 ];
