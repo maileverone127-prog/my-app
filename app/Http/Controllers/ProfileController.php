@@ -29,11 +29,11 @@ class ProfileController extends Controller
         $user->email = $request->email;
 
         if ($request->hasFile('avatar')) {
-            $uploaded = cloudinary()->upload($request->file('avatar')->getRealPath(), [
+            $uploaded = cloudinary()->uploadApi()->upload($request->file('avatar')->getRealPath(), [
                 'folder' => 'portfolio/avatars',
                 'transformation' => ['width' => 300, 'height' => 300, 'crop' => 'fill'],
             ]);
-            $user->avatar = $uploaded->getSecurePath();
+            $user->avatar = $uploaded['secure_url'];
         }
 
         $user->save();
